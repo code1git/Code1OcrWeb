@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.code1system.web.dbmapper1.Db1Mapper">
+	<select id="getCharConfidence" resultType="com.code1system.web.dto.CharConfidenceDto" parameterType="java.util.HashMap">
+		SELECT
+			ocrmedia_id,
+			char_type,
+			char_index,
+			accrue_count,
+			confidence_sum,
+			confidence
+		FROM
+			code1ocr_char_confidence
+		<trim prefix = "WHERE" prefixOverrides="AND" suffixOverrides =",">
+			<if test="ocrmedia_id!=null and ocrmedia_id!=''">
+				AND ocrmedia_id = #{ocrmedia_id}
+			</if>
+			<if test="char_type!=null and char_type!=''">
+				AND char_type = #{char_type}
+			</if>																
+		</trim>
+		ORDER BY char_index ASC
+	</select>
+	
+	<select id="getKeyConfidence" resultType="com.code1system.web.dto.KeyConfidenceDto" parameterType="java.util.HashMap">
+		SELECT
+			ocrmedia_id,
+			key_item_id,
+			key_item_name,
+			accrue_count,
+			confidence_sum,
+			confidence
+		FROM
+			code1ocr_key_confidence
+		<trim prefix = "WHERE" prefixOverrides="AND" suffixOverrides =",">
+			<if test="ocrmedia_id!=null and ocrmedia_id!=''">
+				AND ocrmedia_id = #{ocrmedia_id}
+			</if>																			
+		</trim>
+	</select>
+</mapper>

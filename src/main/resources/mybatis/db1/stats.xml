@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.code1system.web.dbmapper1.Db1Mapper">
+	<select id="getStats" resultType="com.code1system.web.dto.StatsDto" parameterType="com.code1system.web.dto.StatsDto">
+			<trim prefix = "SELECT" suffixOverrides =",">
+			stats_flag,
+			ocrmedia_id,
+			year,
+			yearly_count,
+			<if test='stats_flag!=null and !stats_flag.equals("Y")'>
+				month,
+				monthly_count,
+				<if test='stats_flag!=null and stats_flag.equals("D")'>
+					day_01_count,
+					day_02_count,
+					day_03_count,
+					day_04_count,
+					day_05_count,
+					day_06_count,
+					day_07_count,
+					day_08_count,
+					day_09_count,
+					day_10_count,
+					day_11_count,
+					day_12_count,
+					day_13_count,
+					day_14_count,
+					day_15_count,
+					day_16_count,
+					day_17_count,
+					day_18_count,
+					day_19_count,
+					day_20_count,
+					day_21_count,
+					day_22_count,
+					day_23_count,
+					day_24_count,
+					day_25_count,
+					day_26_count,
+					day_27_count,
+					day_28_count,
+					day_29_count,
+					day_30_count,
+					day_31_count,
+				</if>
+			</if>
+			</trim>
+		FROM
+		code1ocr_usestats
+		<trim prefix = "WHERE" prefixOverrides="AND" suffixOverrides =",">
+			<if test='ocrmedia_id!=null and !ocrmedia_id.equals("")'>
+				AND ocrmedia_id = #{ocrmedia_id}
+			</if>
+			<choose>
+				<when test='stats_flag!=null and stats_flag.equals("Y")'>
+					AND stats_flag = 'Y'
+				</when>
+				<otherwise>
+					AND stats_flag != 'Y'
+				</otherwise>
+			</choose>
+			<if test='year!=null and year!=""'>
+				AND year = #{year}
+			</if>
+			<if test='month!=null and month!=""'>
+				AND month = #{month}
+			</if>
+		</trim>
+		ORDER BY year, month ASC
+	</select>
+	
+</mapper>

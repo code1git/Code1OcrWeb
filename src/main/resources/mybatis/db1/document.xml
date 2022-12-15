@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.code1system.web.dbmapper1.DocumentMapper">
+	<select id="getDocumentList" parameterType="hashmap" resultType="hashmap">
+		SELECT 
+			seq
+			, uuid
+			, DATE_FORMAT(reg_date, '%Y-%m-%d') reg_date
+			, doc_keep_period
+			, DATE_FORMAT(keep_expire_date, '%Y-%m-%d') keep_expire_date
+			, ifsystem_id
+			, user_id
+			, filename
+			, filepath
+			, case when filepath is not null and filepath != '' then concat('/output', replace(SUBSTRING_INDEX(filepath, 'output', -1), '\\', '/')) else '' end webfilepath
+			, ocrmedia_id
+			, page_cnt
+			, status
+			, err_code
+		FROM
+		code1ocr_document
+		WHERE 1=1
+		<if test='s_date != null or e_date != null'>
+			AND DATE_FORMAT(reg_date, '%Y%m%d') between REPLACE(#{s_date}, '-', '') AND REPLACE(#{e_date}, '-', '')
+		</if>
+		<if test='filename != null and filename != ""'>
+			AND filename LIKE CONCAT('%', #{filename}, '%')
+		</if>
+		<if test='ocrmedia_id != null and ocrmedia_id != ""'>
+			AND ocrmedia_id = #{ocrmedia_id}
+		</if>
+	</select>
+	
+	<select id="selectPeriod" resultType="String">
+		SELECT MAX(doc_keep_period) doc_keep_period FROM code1ocr_dockeep_period
+	</select>
+	
+	<select id="selectMediaId" parameterType="hashmap" resultType="String">
+		SELECT ocrmedia_id FROM code1ocr_ocrmedia
+		 WHERE ocrmedia_name = #{ocrmedia_name}
+	</select>
+	
+	<select id="selectApiKey" parameterType="hashmap" resultType="String">
+		SELECT api_key FROM code1ocr_ocrmedia
+		 WHERE ocrmedia_name = #{ocrmedia_name}
+	</select>
+	
+	<insert id="insertDocument" parameterType="hashmap" >
+		INSERT INTO code1ocr_document
+			(
+			uuid,
+			reg_date,
+			doc_keep_period,
+			keep_expire_date,
+			ifsystem_id,
+			user_id,
+			filename,
+			filepath,
+			ocrmedia_id,
+			page_cnt,
+			status,
+			err_code
+			) VALUES (
+			#{uuid},
+			now(),
+			#{doc_keep_period},
+			DATE_ADD(NOW(), INTERVAL #{doc_keep_period} MONTH),
+			#{ocr_system_id},
+			#{ocr_user_id},
+			#{file_name},
+			#{ocr_filepath},
+			#{ocr_mediaName},
+			0,
+			#{status},
+			0
+			)
+	</insert>
+	
+	<update id="updatePeriod" parameterType="hashmap" >
+	UPDATE code1ocr_dockeep_period
+	   set doc_keep_period = #{doc_keep_period}
+	</update>
+	
+	<update id="updateAllPeriod" parameterType="hashmap" >
+	UPDATE code1ocr_document
+	   set doc_keep_period = #{doc_keep_period}
+	     , keep_expire_date = DATE_ADD(reg_date, INTERVAL #{doc_keep_period} MONTH)
+	     WHERE seq = #{seq}
+	</update>
+	
+	<delete id="deleteDoc" parameterType="hashmap">
+		DELETE FROM code1ocr_document WHERE seq = #{seq}
+	</delete>
+	
+	<select id="selectPeriodTable" resultType="String" >
+		select * from code1ocr_dockeep_period
+	</select>
+	
+	<select id="selectOcrMediaId" resultType="hashmap">
+	SELECT ocrmedia_id AS value
+		 , ocrmedia_name AS type
+      FROM code1ocr_ocrmedia
+     WHERE ocrmedia_onoff = 1
+	</select>
+</mapper>
