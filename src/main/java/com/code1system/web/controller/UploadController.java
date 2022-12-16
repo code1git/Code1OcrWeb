@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.code1system.web.aop.LoginCheck;
 import com.code1system.web.aop.SessionUtil;
 import com.code1system.web.dbmapper1.DocumentMapper;
 import com.code1system.web.model.UploadListVO;
@@ -51,6 +52,7 @@ public class UploadController {
 	 * @return
 	 * @throws Exception
 	 */
+	//@LoginCheck
 	@RequestMapping(value = "/ocr/uploadDoc", method = RequestMethod.POST)
 	public UploadListVO upload(UploadListVO vo, HttpSession session) throws Exception{
 //		post 전송

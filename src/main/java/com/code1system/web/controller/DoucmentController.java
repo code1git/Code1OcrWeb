@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.code1system.web.aop.LoginCheck;
 import com.code1system.web.dbmapper1.DocumentMapper;
 import com.code1system.web.model.Document;
 import com.code1system.web.model.UploadListVO;
@@ -30,6 +31,7 @@ public class DoucmentController {
 	 * @return
 	 * @throws Exception
 	 */
+	//@LoginCheck
 	@RequestMapping("/ocr/document")
 	public List<HashMap<String, Object>> getDocumentList(Document params) throws Exception{
 		List<HashMap<String, Object>> docList = new ArrayList<HashMap<String, Object>>();
@@ -50,6 +52,7 @@ public class DoucmentController {
 	 * @return
 	 * @throws Exception
 	 */
+	//@LoginCheck
 	@RequestMapping("/ocr/period")
 	public String selectPeriod() throws Exception{
 		String docList = "";
@@ -66,6 +69,7 @@ public class DoucmentController {
 	 * @return
 	 * @throws Exception
 	 */
+	//@LoginCheck
 	@RequestMapping("/ocr/ocrmediaid")
 	public List<HashMap<String, Object>> selectOcrMediaId() throws Exception{
 		List<HashMap<String, Object>> ocrIdList = new ArrayList<HashMap<String, Object>>();
@@ -83,6 +87,7 @@ public class DoucmentController {
 	 * @return
 	 * @throws Exception
 	 */
+	//@LoginCheck
 	@RequestMapping(value = "/ocr/updatePeriod")
 	public int updatePeriod(Document params) throws Exception{
 		int updateCnt = documentMapper.updatePeriod(params);
@@ -97,6 +102,7 @@ public class DoucmentController {
 	 * @return
 	 * @throws Exception
 	 */
+	//@LoginCheck
 	@RequestMapping(value = "/ocr/deleteDoc", method = RequestMethod.GET)
 	public int deleteDocument(Document params) throws Exception{
 		int updateCnt = 0;
