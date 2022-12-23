@@ -8,33 +8,33 @@
 		LEFT OUTER JOIN CODE1OCR_USER AS USER
 		ON LOG.user_id = USER.user_id
 		<trim prefix = "WHERE" prefixOverrides="AND" suffixOverrides =",">
-			<if test="filename!=null and filename!=''">
+			<if test='filename!=null and !filename.equals("")'>
 				AND filename like '%${filename}%'
 			</if>
 			<if test="ifsystem_id!=null and ifsystem_id!=''">
 				AND ifsystem_id = #{ifsystem_id}
 			</if>
-			<if test="ocrmedia_id!=null and ocrmedia_id!=''">
+			<if test='ocrmedia_id!=null and !ocrmedia_id.equals("")'>
 				AND ocrmedia_id = #{ocrmedia_id}
 			</if>
-			<if test="user_id!=null and user_id!=''">
+			<if test='user_id!=null and !user_id.equals("")'>
 				AND LOG.user_id = #{user_id}
 			</if>
-			<if test="err_code!=null and err_code!=''">
+			<if test='err_code!=null and !err_code.equals("")'>
 				AND err_code = #{err_code}
 			</if>
-			<if test="start_date!=null">
+			<if test='start_date!=null'>
 				AND LOG.reg_date >= #{start_date}
 			</if>
-			<if test="end_date!=null">
+			<if test='end_date!=null'>
 				AND LOG.reg_date <![CDATA[<=]]> #{end_date}
 			</if>
-			<if test="user_name!=null and user_name!=''">
-				AND user_name = #{user_name}
+			<if test='user_name!=null and !user_name.equals("")'>
+				AND user_name like '%${user_name}%'
 			</if>
-			<if test="organization!=null and organization!=''">
-				AND organization = #{organization}
-			</if>																				
+			<if test='organization!=null and !organization.equals("")'>
+				AND organization like '%${organization}%'
+			</if>																			
 		</trim>
 		ORDER BY seq DESC
 		LIMIT #{length} OFFSET #{start}

@@ -12,10 +12,10 @@
 		FROM
 			code1ocr_char_confidence
 		<trim prefix = "WHERE" prefixOverrides="AND" suffixOverrides =",">
-			<if test="ocrmedia_id!=null and ocrmedia_id!=''">
+			<if test='ocrmedia_id!=null and !ocrmedia_id.equals("")'>
 				AND ocrmedia_id = #{ocrmedia_id}
 			</if>
-			<if test="char_type!=null and char_type!=''">
+			<if test='char_type!=null and !char_type.equals("")'>
 				AND char_type = #{char_type}
 			</if>																
 		</trim>
@@ -33,7 +33,7 @@
 		FROM
 			code1ocr_key_confidence
 		<trim prefix = "WHERE" prefixOverrides="AND" suffixOverrides =",">
-			<if test="ocrmedia_id!=null and ocrmedia_id!=''">
+			<if test='ocrmedia_id!=null and !ocrmedia_id.equals("")'>
 				AND ocrmedia_id = #{ocrmedia_id}
 			</if>																			
 		</trim>

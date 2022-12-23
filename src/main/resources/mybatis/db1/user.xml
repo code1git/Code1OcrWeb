@@ -2,18 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.code1system.web.dbmapper1.Db1Mapper">
 	<select id="getUserList"  resultType="com.code1system.web.dto.UserDto" parameterType="com.code1system.web.dto.UserDto">
-		SELECT *
+		SELECT *,
+		(SELECT COUNT(*) FROM CODE1OCR_USER) AS total_user
 		FROM
 		CODE1OCR_USER
 		<trim prefix = "WHERE" prefixOverrides="AND" suffixOverrides =",">
-			<if test="user_name!=null and user_name!=''">
-				AND user_name = #{user_name}
+			<if test='user_name!=null and !user_name.equals("")'>
+				AND user_name like '%${user_name}%'
 			</if>
-			<if test="user_id!=null and user_id!=''">
+			<if test='user_id!=null and !user_id.equals("")'>
 				AND user_id = #{user_id}
 			</if>
-			<if test="organization!=null and organization!=''">
-				AND organization = #{organization}
+			<if test='organization!=null and !organization.equals("")'>
+				AND organization like '%${organization}%'
 			</if>
 		</trim>
 		ORDER BY user_id ASC

@@ -35,4 +35,5 @@ public class UserDto {
 	private int length;
 	@JsonIgnore
 	private int start;
+	private int total_user;
 }
