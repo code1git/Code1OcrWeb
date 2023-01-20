@@ -23,10 +23,16 @@ public class UserService {
 	
 	public boolean authCheck (UserDto userDto) {
 		String ipPw = userDto.getPassword();
-		List<UserDto> userList = db1.getUserById(userDto);
+		List<UserDto> userList = db1.getUserById(userDto.getUser_id());
 		String dbPw = userList.get(0).getPassword();
-		System.out.println(ipPw);
-		System.out.println(dbPw);
 		return ipPw.equals(dbPw)?true:false;
+	}
+	
+	public UserDto getUser (String userId) {
+		List<UserDto> userList = db1.getUserById(userId);
+		if (userList.size() == 0) {
+			return null;
+		}
+		return userList.get(0);
 	}
 }

@@ -29,6 +29,9 @@
 		<if test='ocrmedia_id != null and ocrmedia_id != ""'>
 			AND ocrmedia_id = #{ocrmedia_id}
 		</if>
+		<if test='user_id != null and user_id != ""'>
+			AND user_id = #{user_id}
+		</if>
 	</select>
 	
 	<select id="selectPeriod" resultType="String">

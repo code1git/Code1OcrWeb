@@ -76,18 +76,27 @@ public class UploadController {
 		uploadVo.setOcr_doc_type(documentMapper.selectApiKey(vo.getOcr_mediaName()));
 		
 		uploadVo.setOcr_system_id(vo.getOcr_system_id());
-		String ssoId = SessionUtil.getSsoId(session);
-		if(ssoId!=null&&ssoId.equals("")) {
-			uploadVo.setOcr_user_id(ssoId);
-		}else {
-			uploadVo.setOcr_user_id(vo.getOcr_user_id());
-		}
 		if("CODE1WRP".equals(vo.getOcr_result_format())) {
 			uploadVo.setOcr_result_format("full_text");
 		} else {
 			uploadVo.setOcr_result_format("key_value");
 		}
 		
+//		String ssoId = SessionUtil.getSsoId(session);
+//		if(ssoId!=null&&ssoId.equals("")) {
+//			uploadVo.setOcr_user_id(ssoId);
+//		}else {
+//			uploadVo.setOcr_user_id(vo.getOcr_user_id());
+//		}
+		
+		//프론트 session 유지 issue로 인해 임시 코드(user_id를 parameter로 받음)		
+		String adminId = "!@admin#$";
+		if (vo.getOcr_user_id() != null && vo.getOcr_user_id().equals(adminId)) {
+			vo.setOcr_user_id(null);
+		} else if (vo.getOcr_user_id() == null) {
+			vo.setOcr_user_id("$%nouser&^");
+		}
+		///////////////
 		
 //		uploadVo.setOcr_doc_type("id_card");
 		

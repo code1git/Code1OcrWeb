@@ -36,4 +36,6 @@ public class UserDto {
 	@JsonIgnore
 	private int start;
 	private int total_user;
+	@JsonInclude(JsonInclude.Include.NON_EMPTY)
+	private String login_msg;
 }

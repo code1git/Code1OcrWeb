@@ -15,6 +15,7 @@ public class Document {
 	private String filename;
 	private String ocrmedia_id;
 	private String seqArr;
+	private String user_id;
 	
 	
 }

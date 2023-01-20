@@ -27,42 +27,88 @@ public class AuthController {
 	public String ssoModule;
 	
 	@RequestMapping("/login")
-	public ResponseEntity<Object> login(UserDto userDto, HttpSession session) {
+	public ResponseEntity<UserDto> login(UserDto userDto, HttpSession session) {
+		UserDto rtn = new UserDto();
+		if (userDto.getUser_id() == null || userDto.getUser_id().equals("") ||
+			userDto.getPassword() == null || userDto.getPassword().equals("")) {
+			rtn.setLogin_msg("plz type id and pw");
+			return new ResponseEntity<>(rtn, HttpStatus.UNAUTHORIZED);
+			
+		}
 		if(userService.authCheck(userDto)) {
 			SessionUtil.setLoginMemberId(session, userDto.getUser_id());
-			return new ResponseEntity<>("Login OK", HttpStatus.OK);
+			rtn.setLogin_msg("admin login ok");
+			return new ResponseEntity<>(rtn, HttpStatus.OK);
 		}
-		return new ResponseEntity<>("Wrong user or pw", HttpStatus.UNAUTHORIZED);
+		rtn.setLogin_msg("Wrong user or pw");
+		return new ResponseEntity<>(rtn, HttpStatus.UNAUTHORIZED);
 	}
 	
 	@RequestMapping("/logout")
 	public ResponseEntity<Object> logout(HttpSession session) {
 		SessionUtil.destoryLoginMemberId(session);
-		return new ResponseEntity<>("LOGOUT", HttpStatus.OK);
+		return new ResponseEntity<>("ADMIN LOGOUT", HttpStatus.OK);
 	}
 	
 	@RequestMapping("/ssotest")
-	public String ssoTest(HttpSession session) {
-		SessionUtil.setSsoId(session, "test");
-		return "test sso id on";
+	public ResponseEntity<UserDto> ssoTest(UserDto userDto, HttpSession session) {
+		UserDto rtn = new UserDto();
+		UserDto ssoLoginUser = userService.getUser(userDto.getUser_id());
+		
+		if (ssoLoginUser == null) {
+			rtn.setUser_id(userDto.getUser_id());
+			rtn.setLogin_msg("sso error : user not found");
+			return new ResponseEntity<>(rtn, HttpStatus.UNAUTHORIZED);
+		}
+		if(ssoLoginUser.getAdmin()==1) {
+			rtn.setLogin_msg("sso error : is not sso user");
+			return new ResponseEntity<>(rtn, HttpStatus.UNAUTHORIZED);				
+		}
+		SessionUtil.setSsoId(session, userDto.getUser_id());
+		rtn.setUser_id(ssoLoginUser.getUser_id());
+		rtn.setUser_name(ssoLoginUser.getUser_name());
+		rtn.setOrganization(ssoLoginUser.getOrganization());
+		rtn.setLogin_msg("SSO LOGIN SUCCESS : " + userDto.getUser_id());
+		return new ResponseEntity<>(rtn, HttpStatus.OK);
 	}
 	
 	@RequestMapping("/ssologin")
-	public ResponseEntity<Object> loginSso(UserDto userDto, HttpSession session) {
-		System.out.println("try sso : " + userDto.getPgsecuid());
-		SsoUtil ssoUtil = new SsoUtil();
-		String ssoId = ssoUtil.getSsoId(ssoModule, userDto.getPgsecuid());
-		System.out.println("ssoid :" + ssoId);
-		if(ssoId!=null&&!ssoId.equals("")) {
+	public ResponseEntity<UserDto> loginSso(UserDto userDto, HttpSession session) {
+		UserDto rtn = new UserDto();
+		try {
+			System.out.println("try sso : " + userDto.getPgsecuid());
+			SsoUtil ssoUtil = new SsoUtil();
+			String ssoId = ssoUtil.getSsoId(ssoModule, userDto.getPgsecuid());
+			if(ssoId==null||ssoId.equals("")) {
+				rtn.setLogin_msg("sso error : seed decode error!!");
+				return new ResponseEntity<>(rtn, HttpStatus.UNAUTHORIZED);
+			}
+			System.out.println("ssoid :" + ssoId);
+			UserDto ssoLoginUser = userService.getUser(ssoId);
+			if (ssoLoginUser == null) {
+				rtn.setUser_id(ssoId);
+				rtn.setLogin_msg("sso error : user not found");
+				return new ResponseEntity<>(rtn, HttpStatus.UNAUTHORIZED);
+			}
+			if(ssoLoginUser.getAdmin()==1) {
+				rtn.setLogin_msg("sso error : is not sso user");
+				return new ResponseEntity<>(rtn, HttpStatus.UNAUTHORIZED);				
+			}
 			SessionUtil.setSsoId(session, ssoId);
-			return new ResponseEntity<>("SSO Login OK", HttpStatus.OK);
+			rtn.setUser_id(ssoLoginUser.getUser_id());
+			rtn.setUser_name(ssoLoginUser.getUser_name());
+			rtn.setOrganization(ssoLoginUser.getOrganization());
+			rtn.setLogin_msg("SSO LOGIN SUCCESS");
+			return new ResponseEntity<>(rtn, HttpStatus.OK);
+		} catch (Exception e) {
+			rtn.setLogin_msg("SSO LOGIN FAIL");
+			return new ResponseEntity<>(rtn, HttpStatus.UNAUTHORIZED);
 		}
-		return new ResponseEntity<>("NO SSO USER ID", HttpStatus.UNAUTHORIZED);
 	}
 	
 	@RequestMapping("/ssologout")
 	public ResponseEntity<Object> ssologout(HttpSession session) {
 		SessionUtil.destorySsoId(session);
-		return new ResponseEntity<>("LOGOUT", HttpStatus.OK);
+		return new ResponseEntity<>("SSO LOGOUT", HttpStatus.OK);
 	}
 }

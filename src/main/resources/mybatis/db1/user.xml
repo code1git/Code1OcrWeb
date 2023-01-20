@@ -21,7 +21,7 @@
 		LIMIT #{length} OFFSET #{start}
 	</select>
 	
-	<select id="getUserById" resultType="com.code1system.web.dto.UserDto" parameterType="com.code1system.web.dto.UserDto">
+	<select id="getUserById" resultType="com.code1system.web.dto.UserDto" parameterType="String">
 		SELECT *
 		FROM
 		CODE1OCR_USER

@@ -18,7 +18,7 @@ public interface Db1Mapper {
 	
 	// user mapper
 	List<UserDto> getUserList(UserDto userDto);
-	List<UserDto> getUserById(UserDto userDto);
+	List<UserDto> getUserById(String userId);
 	
 	// Confidence
 	List<KeyConfidenceDto> getKeyConfidence(HashMap<String, String> querymap);
